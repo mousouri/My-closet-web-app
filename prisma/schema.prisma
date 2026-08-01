@@ -1,0 +1,167 @@
+// YOUR CLOSET — Prisma schema
+// Women's fashion ecommerce: products, categories, collections, users, orders, wishlist, reviews
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  name          String?
+  password      String?
+  role          String        @default("customer") // customer | admin
+  image         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  orders        Order[]
+  wishlistItems WishlistItem[]
+  reviews       Review[]
+  addresses     Address[]
+}
+
+model Address {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName  String
+  line1     String
+  line2     String?
+  city      String
+  state     String?
+  postalCode String
+  country   String  @default("United States")
+  phone     String?
+  isDefault Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  image       String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Collection {
+  id          String              @id @default(cuid())
+  name        String
+  slug        String              @unique
+  description String?
+  image       String?
+  season      String?
+  createdAt   DateTime            @default(now())
+  products    ProductCollection[] // renamed from Product[] to resolve relation
+}
+
+model Product {
+  id           String        @id @default(cuid())
+  name         String
+  slug         String        @unique
+  description  String
+  price        Float
+  compareAt    Float?
+  currency     String        @default("USD")
+  image        String
+  images       String        // JSON array of URLs
+  categoryId   String
+  category     Category      @relation(fields: [categoryId], references: [id])
+  collections  ProductCollection[]
+  sizes        String        // JSON array: ["XS","S","M","L","XL"]
+  colors       String        // JSON array
+  material     String?
+  care         String?
+  fit          String?
+  rating       Float         @default(0)
+  reviewCount  Int           @default(0)
+  stock        Int           @default(20)
+  featured     Boolean       @default(false)
+  newArrival   Boolean       @default(false)
+  status       String        @default("active") // active | draft | archived
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  reviews      Review[]
+  wishlistItems WishlistItem[]
+  orderItems   OrderItem[]
+}
+
+model ProductCollection {
+  productId    String
+  collectionId String
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([productId, collectionId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName String
+  rating    Int
+  title     String?
+  body      String
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id            String       @id @default(cuid())
+  number        String       @unique
+  userId        String?
+  user          User?        @relation(fields: [userId], references: [id])
+  email         String
+  status        String       @default("pending") // pending | paid | shipped | delivered | cancelled
+  total         Float
+  subtotal      Float
+  shipping      Float
+  tax           Float
+  discount      Float        @default(0)
+  shippingName  String
+  shippingLine1 String
+  shippingLine2 String?
+  shippingCity  String
+  shippingState String?
+  shippingPostal String
+  shippingCountry String
+  items         OrderItem[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model OrderItem {
+  id         String  @id @default(cuid())
+  orderId    String
+  order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product @relation(fields: [productId], references: [id])
+  name       String
+  slug       String
+  image      String
+  price      Float
+  quantity   Int
+  size       String?
+  color      String?
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
