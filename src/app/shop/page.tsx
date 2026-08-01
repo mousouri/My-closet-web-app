@@ -25,8 +25,12 @@ import {
 } from "@/components/ui/sheet";
 import { SlidersHorizontal, X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatPrice } from "@/lib/format";
 
 type Category = { id: string; name: string; slug: string; count: number };
+
+const PRICE_MAX = 1_500_000;
+const PRICE_STEP = 10_000;
 
 const SIZES = ["XS", "S", "M", "L", "XL"];
 
@@ -82,7 +86,7 @@ function ShopContent() {
   const q = searchParams.get("q") ?? "";
   const sort = searchParams.get("sort") ?? "featured";
   const minPrice = Number(searchParams.get("minPrice") ?? "0");
-  const maxPrice = Number(searchParams.get("maxPrice") ?? "500");
+  const maxPrice = Number(searchParams.get("maxPrice") ?? String(PRICE_MAX));
   const activeSize = searchParams.get("size") ?? "";
   const activeColor = searchParams.get("color") ?? "";
 
@@ -136,8 +140,8 @@ function ShopContent() {
         <div className="px-1">
           <Slider
             min={0}
-            max={500}
-            step={10}
+            max={PRICE_MAX}
+            step={PRICE_STEP}
             value={[minPrice, maxPrice]}
             onValueChange={(v) => {
               updateParam("minPrice", String(v[0]));
@@ -146,8 +150,8 @@ function ShopContent() {
             className="my-4"
           />
           <div className="flex items-center justify-between text-sm">
-            <span>${minPrice}</span>
-            <span>${maxPrice}{maxPrice >= 500 ? "+" : ""}</span>
+            <span>{formatPrice(minPrice)}</span>
+            <span>{formatPrice(maxPrice)}{maxPrice >= PRICE_MAX ? "+" : ""}</span>
           </div>
         </div>
       </div>
