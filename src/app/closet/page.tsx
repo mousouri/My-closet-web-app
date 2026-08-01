@@ -23,6 +23,7 @@ type SortOption = "recent" | "price-asc" | "price-desc" | "name-asc";
 export default function ClosetPage() {
   const items = useWishlist((s) => s.items);
   const remove = useWishlist((s) => s.remove);
+  const clearWishlist = useWishlist((s) => s.clear);
   const add = useCart((s) => s.add);
   const [sort, setSort] = React.useState<SortOption>("recent");
 
@@ -46,6 +47,11 @@ export default function ClosetPage() {
       add({ id: item.id, slug: item.slug, name: item.name, image: item.image, price: item.price });
     });
     toast.success(`${items.length} piece${items.length === 1 ? "" : "s"} moved to your bag`);
+  };
+
+  const handleClearWishlist = () => {
+    clearWishlist();
+    toast.success("Your wishlist has been cleared");
   };
 
   const handleShare = () => {
@@ -100,6 +106,9 @@ export default function ClosetPage() {
             </Button>
             <Button variant="outline" size="sm" onClick={handleShare}>
               <Share2 className="mr-1.5 h-4 w-4" /> Share closet
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleClearWishlist} className="text-destructive hover:text-destructive">
+              <Trash2 className="mr-1.5 h-4 w-4" /> Clear wishlist
             </Button>
           </div>
 

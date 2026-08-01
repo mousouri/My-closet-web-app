@@ -16,6 +16,7 @@ export function CartSheet() {
   const items = useCart((s) => s.items);
   const updateQty = useCart((s) => s.updateQty);
   const remove = useCart((s) => s.remove);
+  const clearCart = useCart((s) => s.clear);
   const subtotal = cartSubtotal(items);
   const freeShippingThreshold = 150;
   const remaining = Math.max(0, freeShippingThreshold - subtotal);
@@ -25,9 +26,16 @@ export function CartSheet() {
     <Sheet open={isOpen} onOpenChange={setOpen}>
       <SheetContent className="flex w-full flex-col p-0 sm:max-w-md">
         <SheetHeader className="border-b border-border/60 px-5 py-4">
-          <SheetTitle className="flex items-center gap-2 text-base font-medium tracking-wide">
-            <ShoppingBag className="h-4 w-4" /> Your Bag ({items.reduce((n, i) => n + i.quantity, 0)})
-          </SheetTitle>
+          <div className="flex items-center justify-between gap-3">
+            <SheetTitle className="flex items-center gap-2 text-base font-medium tracking-wide">
+              <ShoppingBag className="h-4 w-4" /> Your Bag ({items.reduce((n, i) => n + i.quantity, 0)})
+            </SheetTitle>
+            {items.length > 0 && (
+              <Button type="button" variant="ghost" size="sm" onClick={clearCart} className="text-xs text-destructive hover:text-destructive">
+                Clear
+              </Button>
+            )}
+          </div>
         </SheetHeader>
 
         {items.length === 0 ? (

@@ -15,6 +15,7 @@ export default function CartPage() {
   const items = useCart((s) => s.items);
   const updateQty = useCart((s) => s.updateQty);
   const remove = useCart((s) => s.remove);
+  const clearCart = useCart((s) => s.clear);
   const [promo, setPromo] = React.useState("");
   const [appliedPromo, setAppliedPromo] = React.useState<{ code: string; percent: number } | null>(null);
 
@@ -24,6 +25,12 @@ export default function CartPage() {
   const shipping = afterDiscount >= 150 || afterDiscount === 0 ? 0 : 8;
   const tax = afterDiscount * 0.08;
   const total = afterDiscount + shipping + tax;
+
+  const handleClearCart = () => {
+    clearCart();
+    setAppliedPromo(null);
+    toast.success("Your bag has been cleared");
+  };
 
   const applyPromo = () => {
     const code = promo.trim().toUpperCase();
@@ -58,12 +65,17 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <Link href="/shop" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
-          <ArrowLeft className="h-4 w-4" /> Continue shopping
-        </Link>
-        <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Your bag</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{items.length} item{items.length === 1 ? "" : "s"}</p>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <Link href="/shop" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
+            <ArrowLeft className="h-4 w-4" /> Continue shopping
+          </Link>
+          <h1 className="mt-3 font-serif text-4xl sm:text-5xl">Your bag</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{items.length} item{items.length === 1 ? "" : "s"}</p>
+        </div>
+        <Button type="button" variant="outline" onClick={handleClearCart} className="text-destructive hover:text-destructive">
+          <Trash2 className="mr-2 h-4 w-4" /> Clear bag
+        </Button>
       </div>
 
       <div className="grid gap-10 lg:grid-cols-3">
