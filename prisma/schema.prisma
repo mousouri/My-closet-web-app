@@ -69,7 +69,7 @@ model Product {
   description  String
   price        Float
   compareAt    Float?
-  currency     String        @default("USD")
+  currency     String        @default("TZS")
   image        String
   images       String        // JSON array of URLs
   categoryId   String
@@ -123,6 +123,10 @@ model Order {
   user          User?        @relation(fields: [userId], references: [id])
   email         String
   status        String       @default("pending") // pending | paid | shipped | delivered | cancelled
+  paymentStatus String       @default("unpaid") // unpaid | pending | paid | refunded | failed
+  paymentProvider String?
+  paymentReference String?
+  paidAt        DateTime?
   total         Float
   subtotal      Float
   shipping      Float

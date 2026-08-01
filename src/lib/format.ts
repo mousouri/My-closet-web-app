@@ -1,9 +1,9 @@
-export function formatPrice(amount: number, currency = "USD") {
-  return new Intl.NumberFormat("en-US", {
+export function formatPrice(amount: number, currency = "TZS") {
+  return new Intl.NumberFormat("sw-TZ", {
     style: "currency",
     currency,
-    minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount);
 }
 

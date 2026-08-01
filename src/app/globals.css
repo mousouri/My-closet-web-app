@@ -125,6 +125,25 @@
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv11";
   }
+  a,
+  button,
+  [role="button"],
+  [role="menuitem"],
+  [role="option"],
+  [role="tab"],
+  [role="switch"],
+  [role="checkbox"],
+  [data-slot="select-trigger"],
+  [data-slot="dropdown-menu-trigger"],
+  [data-slot="sheet-trigger"],
+  [data-slot="dialog-trigger"] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"],
+  [data-disabled] {
+    cursor: not-allowed;
+  }
   /* Elegant typographic defaults */
   h1, h2, h3 {
     font-family: var(--font-cormorant), Georgia, serif;

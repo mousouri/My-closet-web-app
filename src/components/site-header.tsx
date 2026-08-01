@@ -74,6 +74,8 @@ export function SiteHeader() {
 
   const isHome = pathname === "/";
 
+  if (pathname.startsWith("/admin")) return null;
+
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const q = searchInputRef.current?.value;

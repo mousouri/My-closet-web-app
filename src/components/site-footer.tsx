@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BrandLogo, DressMark } from "@/components/brand-logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,7 @@ function TikTokIcon() {
 }
 
 export function SiteFooter() {
+  const pathname = usePathname();
   const [email, setEmail] = React.useState("");
   const [pending, setPending] = React.useState(false);
   const [subscribed, setSubscribed] = React.useState(false);
@@ -79,6 +81,8 @@ export function SiteFooter() {
       setPending(false);
     }
   };
+
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <footer className="mt-auto border-t border-border/60 bg-secondary/30">

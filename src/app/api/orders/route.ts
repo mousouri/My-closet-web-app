@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
         number,
         email,
         status: "paid",
+        paymentStatus: "paid",
+        paidAt: new Date(),
         total: Number(total),
         subtotal: Number(subtotal),
         shipping: Number(shippingCost ?? 0),
